@@ -5,6 +5,8 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "dev": "node run-bfhl.js"
+  },
   "dependencies": {}
 }
