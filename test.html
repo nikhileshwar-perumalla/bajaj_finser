@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>API Test</title></head>
+<body>
+  <h2>Test POST API</h2>
+  <button onclick="sendPost()">Send Request</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function sendPost() {
+      const response = await fetch("http://localhost:3000/bfhl", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          data: ["a","1","334","4","R","$"]
+        })
+      });
+      const data = await response.json();
+      document.getElementById("result").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>
