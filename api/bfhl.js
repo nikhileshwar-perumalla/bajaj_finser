@@ -1,8 +1,29 @@
 // api/bfhl.js
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { data } = req.body;
+    // Support both environments: Vercel may provide req.body; otherwise parse manually
+    let body = req.body;
+    if (!body) {
+      try {
+        body = await new Promise((resolve, reject) => {
+          let raw = "";
+          req.on("data", chunk => (raw += chunk));
+          req.on("end", () => {
+            try {
+              resolve(raw ? JSON.parse(raw) : {});
+            } catch (e) {
+              reject(e);
+            }
+          });
+          req.on("error", reject);
+        });
+      } catch (e) {
+        return res.status(400).json({ is_success: false, message: "Invalid JSON" });
+      }
+    }
+
+    const { data } = body;
 
     // fixed info (replace with your details)
     const full_name = "John Doe"; // replace with your full name
