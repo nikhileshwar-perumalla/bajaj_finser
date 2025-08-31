@@ -1,28 +1,22 @@
 // Minimal local runner for the Vercel serverless function at api/bfhl.js
 import http from 'http';
-import handler from './api/bfhl.js';
+import handler from './api/bfhl.js'; // ESM default export
 
 const server = http.createServer((req, res) => {
-  const { url, method, headers } = req;
-
-  if (url === '/api/bfhl') {
+  if (req.url === '/api/bfhl' || req.url === '/bfhl') {
     let raw = '';
     req.on('data', chunk => (raw += chunk));
     req.on('end', () => {
-      // Parse JSON if present
-      if (raw && typeof raw === 'string') {
-        try {
-          req.body = JSON.parse(raw);
-        } catch (e) {
-          res.statusCode = 400;
-          res.setHeader('Content-Type', 'application/json');
-          return res.end(JSON.stringify({ is_success: false, message: 'Invalid JSON' }));
-        }
-      } else {
-        req.body = {};
+      // Attach body for the handler (mimic Vercel)
+      try {
+        req.body = raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        res.statusCode = 400;
+        res.setHeader('Content-Type', 'application/json');
+        return res.end(JSON.stringify({ is_success: false, message: 'Invalid JSON' }));
       }
 
-      // Express-like helpers
+      // Express-like helpers the handler expects
       res.json = (obj) => {
         if (!res.getHeader('Content-Type')) {
           res.setHeader('Content-Type', 'application/json');

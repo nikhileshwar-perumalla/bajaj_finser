@@ -6,7 +6,7 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "dev": "node run-bfhl.js"
+  "dev": "node run-bfhl.js"
   },
   "dependencies": {}
 }

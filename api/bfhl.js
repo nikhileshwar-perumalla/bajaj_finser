@@ -1,6 +1,11 @@
 // api/bfhl.js
 
 export default async function handler(req, res) {
+  if (req.method === "GET") {
+    // Health/landing JSON for browsers opening /bfhl
+    return res.status(200).json({ operation_code: 1 });
+  }
+
   if (req.method === "POST") {
     // Support both environments: Vercel may provide req.body; otherwise parse manually
     let body = req.body;
@@ -73,7 +78,8 @@ export default async function handler(req, res) {
       sum,
       concat_string
     });
-  } else {
-    res.status(200).json({ message: "API is working 🚀. Use POST /api/bfhl with JSON body to get full output." });
   }
+
+  // Method not allowed for other verbs
+  res.status(405).json({ is_success: false, message: "Method Not Allowed" });
 }
