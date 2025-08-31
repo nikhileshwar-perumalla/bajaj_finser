@@ -4,9 +4,9 @@
   "description": "",
   "license": "ISC",
   "author": "",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-  "dev": "node run-bfhl.js"
+    "dev": "node run-bfhl.js"
   },
   "dependencies": {}
 }

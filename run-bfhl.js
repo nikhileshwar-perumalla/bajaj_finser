@@ -1,13 +1,15 @@
-// Minimal local runner for the Vercel serverless function at api/bfhl.js
-import http from 'http';
-import handler from './api/bfhl.js'; // ESM default export
+// CommonJS local runner for the Vercel function at api/bfhl.js
+const http = require('http');
+const url = require('url');
+const handler = require('./api/bfhl.js'); // module.exports = function(req,res)
 
 const server = http.createServer((req, res) => {
-  if (req.url === '/api/bfhl' || req.url === '/bfhl') {
+  const pathname = url.parse(req.url).pathname;
+  if (pathname === '/api/bfhl' || pathname === '/bfhl') {
     let raw = '';
-    req.on('data', chunk => (raw += chunk));
+    req.on('data', (chunk) => (raw += chunk));
     req.on('end', () => {
-      // Attach body for the handler (mimic Vercel)
+      // Attach JSON body if present
       try {
         req.body = raw ? JSON.parse(raw) : {};
       } catch (e) {
@@ -16,7 +18,7 @@ const server = http.createServer((req, res) => {
         return res.end(JSON.stringify({ is_success: false, message: 'Invalid JSON' }));
       }
 
-      // Express-like helpers the handler expects
+      // Minimal Express-like helpers expected by handler
       res.json = (obj) => {
         if (!res.getHeader('Content-Type')) {
           res.setHeader('Content-Type', 'application/json');
@@ -38,5 +40,5 @@ const server = http.createServer((req, res) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`bfhl local server running on http://localhost:${PORT}/api/bfhl`);
+  console.log(`Local bfhl running at http://localhost:${PORT}/bfhl`);
 });
